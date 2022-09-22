@@ -1,27 +1,19 @@
-using StructureMap.Configuration.DSL;
+using StructureMap;
 using Tarantino.Core.DatabaseManager.Services;
 using Tarantino.Core.DatabaseManager.Services.Impl;
 
 namespace Tarantino.Infrastructure
 {
-	public class InfrastructureDependencyRegistry : Registry
-	{
-		protected override void configure()
-		{
-			Scan(y =>
-			     	{
-						y.TheCallingAssembly();
-						y.WithDefaultConventions();
-			     	});
-
-			ForRequestedType<IDatabaseActionExecutor>()
-				.AddInstances(y =>
-				              	{
-				              		y.OfConcreteType<DatabaseCreator>().Name = "Create";
-				              		y.OfConcreteType<DatabaseDropper>().Name = "Drop";
-				              		y.OfConcreteType<DatabaseUpdater>().Name = "Update";
-				              	});
-
-		}
-	}
+  public class InfrastructureDependencyRegistry : Registry
+  {
+    public InfrastructureDependencyRegistry()
+    {
+      For<IDatabaseActionExecutor>().AddInstances(y =>
+      {
+        y.Type<DatabaseCreator>().Named("Create");
+        y.Type<DatabaseDropper>().Named("Drop");
+        y.Type<DatabaseUpdater>().Named("Update");
+      });
+    }
+  }
 }

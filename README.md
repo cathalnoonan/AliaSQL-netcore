@@ -1,11 +1,12 @@
-<img src="https://raw.github.com/ClearMeasure/AliaSQL/master/images/AliaSQL.PNG" alt="AliaSQL" width="400">
+# AliaSQL
 
-What is AliaSQL?
---------------------------------
-AliaSQL is a command line tool for database deployments. It is a drop in replacement for [Tarantino](https://github.com/HeadspringLabs/Tarantino) with some additional features. 
+## What is AliaSQL?
 
-How do I get started?
---------------------------------
+![AliaSQL](images/AliaSQL-200x200.png)
+
+AliaSQL is a command line tool for database deployments. It is a drop in replacement for [Tarantino](https://github.com/HeadspringLabs/Tarantino) with some additional features.
+
+## How do I get started?
 
 Check out the [getting started guide](https://github.com/ClearMeasure/AliaSQL/wiki/Getting-started).
 
@@ -15,28 +16,14 @@ Read the blog posts [here](http://sharpcoders.org/post/Introducing-AliaSQL) and 
 
 There is also a C# runner as of version 1.4. Read about it here https://github.com/ClearMeasure/AliaSQL/wiki/C%23-runner 
 
-Where can I get it?
---------------------------------
-First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget).
+## What is this repository?
 
-We recommend starting with the AliaSQL Kickstarter that creates Create, Update, Everytime, and TestData folders for your SQL scripts and  provides a Visual Studio runner. To get started, create an empty C# console app then install AliaSQL.Kickstarter from the package manager console:
+This repository is a very quick and dirty port to .net 6.0 including only the parts of Tarantino needed to the get project up and running.
 
-    PM> Install-Package AliaSQL.Kickstarter
+Web components have been removed because I don't use them. :grin:
 
-To get the the AliaSQL.exe tool by itself install AliaSQL from the package manager console:
+## Wishlist
 
-    PM> Install-Package AliaSQL
-    
-To get the the c# runner install AliaSQL.Core from the package manager console:
-
-    PM> Install-Package AliaSQL.Core
-
-
-The latest compiled version can be found here: https://github.com/ClearMeasure/AliaSQL/raw/master/nuget/content/scripts/AliaSQL.exe
-
-What else needs done?
---------------------- 
-- More unit tests need written around Baseline, TestData, Update, and Everytime 
-- There are likely some additional things in SQL scripts that will fail when running in a transaction. More detail on this in the [getting started guide](https://github.com/ClearMeasure/AliaSQL/wiki/Getting-started).
-
--
+- Replace Tarantino with something more modern
+- Replace StructureMap with a more modern DI container
+- Rewrite and modernize the core code

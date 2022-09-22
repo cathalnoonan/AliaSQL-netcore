@@ -1,0 +1,1 @@
+ALTER TABLE [dbo].[Person] ADD Gender NVARCHAR(50) NOT NULL DEFAULT('Not Specified')
