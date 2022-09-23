@@ -20,9 +20,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Transactions" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="SqlFiles\CreateSchema.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -36,9 +33,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="StructureMap" Version="4.7.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tarantino.Infrastructure\Tarantino.Infrastructure.csproj" />
+    <ProjectReference Include="..\TarantinoShim\TarantinoShim.csproj" />
   </ItemGroup>
   <PropertyGroup />
 </Project>

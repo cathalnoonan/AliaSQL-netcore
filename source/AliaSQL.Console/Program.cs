@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using AliaSQL.Core;
 using AliaSQL.Core.Model;
-using AliaSQL.Core.Services.Impl;
 
 namespace AliaSQL.Console
 {
@@ -44,9 +42,6 @@ namespace AliaSQL.Console
 
             if (deployer.UpdateDatabase(settings, scriptDirectory, action))
             {
-                if (Debugger.IsAttached)
-                    System.Console.ReadLine();
-
                 return;
             }    
 
@@ -57,9 +52,7 @@ namespace AliaSQL.Console
         {
             System.Console.WriteLine("Invalid Arguments");
             System.Console.WriteLine(" ");
-            System.Console.WriteLine( Path.GetFileName(typeof(Program).Assembly.Location) + @" Action(Create|Update|Rebuild|TestData|Baseline|Drop) .\SqlExpress DatabaseName  .\DatabaseScripts\ ");
-            System.Console.WriteLine(Environment.NewLine + "-- or --"+ Environment.NewLine);
-            System.Console.WriteLine( Path.GetFileName(typeof(Program).Assembly.Location) + @" Action(Create|Update|Rebuild|TestData|Baseline|Drop) .\SqlExpress DatabaseName  .\DatabaseScripts\ Username Password");
+            System.Console.WriteLine(@"AliaSQL Action<Create|Update|Rebuild|TestData|Baseline|Drop> <Server> <DatabaseName>  <Database Scripts Path> [Username] [Password] ");
             System.Console.WriteLine(Environment.NewLine + "---------------------------------------------" + Environment.NewLine);           
             System.Console.WriteLine("Create - Creates database and runs scripts in 'Create' and 'Update' folders.");
             System.Console.WriteLine(" ");
@@ -72,9 +65,6 @@ namespace AliaSQL.Console
             System.Console.WriteLine("Baseline - Creates usd_AppliedDatabaseScripts table and logs all current scripts in 'Create' and 'Update' folders as applied without actually running them.");
             System.Console.WriteLine(" ");
             System.Console.WriteLine("Drop - Drops the database");
-
-            if (Debugger.IsAttached)
-                System.Console.ReadLine();
         }
     }
 }

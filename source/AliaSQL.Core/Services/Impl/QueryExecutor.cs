@@ -34,31 +34,27 @@ namespace AliaSQL.Core.Services.Impl
         {
             string connectionString = _connectionStringGenerator.GetConnectionString(settings, includeDatabaseName);
 
-            using (var connection = new SqlConnection(connectionString))
+            using var connection = new SqlConnection(connectionString);
+            connection.Open();
+            using var command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandTimeout = 0;
+            var scripts = SplitSqlStatements(sql);
+
+
+            foreach (var splitScript in scripts)
             {
-                connection.Open();
-                using (var command = new SqlCommand())
+                command.CommandText = splitScript;
+                try
                 {
-                    command.Connection = connection;
-                    command.CommandTimeout = 0;
-                    var scripts = SplitSqlStatements(sql);
-
-
-                    foreach (var splitScript in scripts)
-                    {
-                        command.CommandText = splitScript;
-                        try
-                        {
-                            command.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
-                            ex.Data.Add("Custom", "Erroring script was not run in a transaction and may be partially committed.");
-                            throw ex;
-                        }
-
-                    }
+                    command.ExecuteNonQuery();
                 }
+                catch (Exception ex)
+                {
+                    ex.Data.Add("Custom", "Erroring script was not run in a transaction and may be partially committed.");
+                    throw ex;
+                }
+
             }
         }
 
@@ -74,30 +70,28 @@ namespace AliaSQL.Core.Services.Impl
             using (var scope = new TransactionScope())
             {
                 string connectionString = _connectionStringGenerator.GetConnectionString(settings, true);
-                using (var connection = new SqlConnection(connectionString))
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+                using (var command = new SqlCommand())
                 {
-                    connection.Open();
-                    using (var command = new SqlCommand())
+                    command.Connection = connection;
+                    command.CommandTimeout = 0;
+                    var scripts = SplitSqlStatements(sql);
+                    foreach (var splitScript in scripts)
                     {
-                        command.Connection = connection;
-                        command.CommandTimeout = 0;
-                        var scripts = SplitSqlStatements(sql);
-                        foreach (var splitScript in scripts)
+                        command.CommandText = splitScript;
+                        try
                         {
-                            command.CommandText = splitScript;
-                            try
-                            {
-                                command.ExecuteNonQuery();
-                            }
-                            catch (Exception ex)
-                            {
-                                ex.Data.Add("Custom", "Erroring script was run in a transaction and was rolled back.");
-                                throw ex;
-                            }
+                            command.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.Data.Add("Custom", "Erroring script was run in a transaction and was rolled back.");
+                            throw ex;
                         }
                     }
-                    scope.Complete();
                 }
+                scope.Complete();
             }
         }
 
@@ -105,15 +99,13 @@ namespace AliaSQL.Core.Services.Impl
         {
             string connectionString = _connectionStringGenerator.GetConnectionString(settings, true);
 
-            using (var connection = new SqlConnection(connectionString))
+            using var connection = new SqlConnection(connectionString);
+            connection.Open();
+            using (var command = new SqlCommand())
             {
-                connection.Open();
-                using (var command = new SqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandText = sql;
-                    return Convert.ToInt32(command.ExecuteScalar());
-                }
+                command.Connection = connection;
+                command.CommandText = sql;
+                return Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
@@ -125,18 +117,14 @@ namespace AliaSQL.Core.Services.Impl
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                using (var command = new SqlCommand())
+                using var command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandText = sql;
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    command.Connection = connection;
-                    command.CommandText = sql;
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string item = reader[0].ToString();
-                            list.Add(item);
-                        }
-                    }
+                    string item = reader[0].ToString();
+                    list.Add(item);
                 }
 
 
@@ -169,14 +157,12 @@ namespace AliaSQL.Core.Services.Impl
                 string sqlCreateDbQuery = string.Format("SELECT database_id FROM sys.databases WHERE Name = '{0}'", settings.Database);
                 using (tmpConn)
                 {
-                    using (var sqlCmd = new SqlCommand(sqlCreateDbQuery, tmpConn))
-                    {
-                        tmpConn.Open();
-                        var databaseId = (int)sqlCmd.ExecuteScalar();
-                        tmpConn.Close();
+                    using var sqlCmd = new SqlCommand(sqlCreateDbQuery, tmpConn);
+                    tmpConn.Open();
+                    var databaseId = (int)sqlCmd.ExecuteScalar();
+                    tmpConn.Close();
 
-                        result = (databaseId > 0);
-                    }
+                    result = (databaseId > 0);
                 }
             }
             catch (Exception)
@@ -192,18 +178,14 @@ namespace AliaSQL.Core.Services.Impl
             using (var connection = new SqlConnection(_connectionStringGenerator.GetConnectionString(settings, true)))
             {
                 connection.Open();
-                using (var command = new SqlCommand())
+                using var command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandText = "if OBJECT_ID('usd_AppliedDatabaseScript', 'U') is not null select ScriptFile from usd_AppliedDatabaseScript else select top(0) null as ScriptFile ";
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    command.Connection = connection;
-                    command.CommandText = "if OBJECT_ID('usd_AppliedDatabaseScript', 'U') is not null select ScriptFile from usd_AppliedDatabaseScript else select top(0) null as ScriptFile ";
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string item = reader[0].ToString();
-                            executedfiles.Add(item);
-                        }
-                    }
+                    string item = reader[0].ToString();
+                    executedfiles.Add(item);
                 }
             }
             return executedfiles;
@@ -215,18 +197,14 @@ namespace AliaSQL.Core.Services.Impl
             using (var connection = new SqlConnection(_connectionStringGenerator.GetConnectionString(settings, true)))
             {
                 connection.Open();
-                using (var command = new SqlCommand())
+                using var command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandText = "if OBJECT_ID('usd_AppliedDatabaseTestDataScript', 'U') is not null select ScriptFile from usd_AppliedDatabaseTestDataScript else select top(0) null as ScriptFile ";
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    command.Connection = connection;
-                    command.CommandText = "if OBJECT_ID('usd_AppliedDatabaseTestDataScript', 'U') is not null select ScriptFile from usd_AppliedDatabaseTestDataScript else select top(0) null as ScriptFile ";
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string item = reader[0].ToString();
-                            executedfiles.Add(item);
-                        }
-                    }
+                    string item = reader[0].ToString();
+                    executedfiles.Add(item);
                 }
             }
             return executedfiles;
@@ -239,12 +217,10 @@ namespace AliaSQL.Core.Services.Impl
             var tmpConn = new SqlConnection(_connectionStringGenerator.GetConnectionString(settings, true));
             using (tmpConn)
             {
-                using (var sqlCmd = new SqlCommand("if OBJECT_ID('usd_AppliedDatabaseScript', 'U') is not null select count(1) from usd_AppliedDatabaseScript else select 0 as Version", tmpConn))
-                {
-                    tmpConn.Open();
-                    version = (int)sqlCmd.ExecuteScalar();
-                    tmpConn.Close();
-                }
+                using var sqlCmd = new SqlCommand("if OBJECT_ID('usd_AppliedDatabaseScript', 'U') is not null select count(1) from usd_AppliedDatabaseScript else select 0 as Version", tmpConn);
+                tmpConn.Open();
+                version = (int)sqlCmd.ExecuteScalar();
+                tmpConn.Close();
             }
             return version;
         }

@@ -20,3 +20,5 @@ Express/
 *.msi
 setup.exe
 source/packages/*
+.vs/
+.nuget/

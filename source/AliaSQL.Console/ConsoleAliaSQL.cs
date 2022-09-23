@@ -60,9 +60,6 @@ namespace AliaSQL.Console
 
             }
 
-            if (Debugger.IsAttached)
-                System.Console.ReadLine();
-
             return false;
         }
     }
