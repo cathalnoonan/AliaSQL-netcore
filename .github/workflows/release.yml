@@ -1,0 +1,28 @@
+on:
+  release:
+    types: [created]
+name: Handle Release
+jobs:
+  generate:
+    name: Create release-artifacts
+    runs-on: ubuntu-latest
+    env:
+      BUILD_FOR: "win-x64 win-arm64 linux-x64 linux-musl-x64 linux-arm linux-arm64 osx-x64 osx.11.0-arm64"
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@master
+      - uses: actions/setup-dotnet@master
+        with:
+          dotnet-version: '6.0.x'
+      - run: |
+          mkdir artifacts
+          for arch in $BUILD_FOR; do
+            dotnet publish --runtime $arch --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=None -p:DebugSymbols=false -o publish/$arch
+            zip -x *.pdb -x *.config -rj artifacts/AliaSQL-$arch.zip publish/$arch/*
+          done
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'artifacts/*.zip'
