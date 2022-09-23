@@ -15,6 +15,7 @@ jobs:
         with:
           dotnet-version: '6.0.x'
       - run: |
+          cd source/AliaSQL.Console
           mkdir artifacts
           for arch in $BUILD_FOR; do
             dotnet publish --runtime $arch --self-contained -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=None -p:DebugSymbols=false -o publish/$arch
