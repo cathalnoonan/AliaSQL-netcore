@@ -16,19 +16,12 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimed>true</PublishTrimed>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>AliaSQL.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AliaSQL.Core\AliaSQL.Core.csproj" />
   </ItemGroup>
@@ -48,12 +41,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AliaSQL.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Properties/AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup />
   <PropertyGroup />

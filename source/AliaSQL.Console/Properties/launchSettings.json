@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "AliaSQL.Console": {
-      "commandName": "Project",
-      "commandLineArgs": "Rebuild localhost AliaSQL_Test test",
-      "workingDirectory": "C:\\src\\AliaSQL-netcore"
-    }
-  }
-}
