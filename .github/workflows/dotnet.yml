@@ -18,12 +18,12 @@ jobs:
           MSSQL_PID: Developer
         ports:
           - 1433:1433
-      # wait-for-it:
-      #   image: chainguard/wait-for-it
-      #   options: >-
-      #     -h sqlserver
-      #     -p 1433
-      #     -t 60
+      wait-for-it:
+        image: chainguard/wait-for-it
+        options: >-
+          -h sqlserver
+          -p 1433
+          -t 60
     steps:
       - name: 'Check environment'
         env:
