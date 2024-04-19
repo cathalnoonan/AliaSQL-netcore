@@ -1,0 +1,41 @@
+name: dotnet
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_SA_PASSWORD: SomethingSuperSecret!123
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+      # wait-for-it:
+      #   image: chainguard/wait-for-it
+      #   options: >-
+      #     -h sqlserver
+      #     -p 1433
+      #     -t 60
+    steps:
+      - name: 'Check environment'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: |
+          echo test
+      - name: 'Setup: checkout'
+        uses: actions/checkout@v4
+      - name: 'Setup: dotnet'
+        uses: actions/setup-dotnet@v4
+      - name: 'Build: dotnet build'
+        working-directory: ./source
+        run: |
+          dotnet build
