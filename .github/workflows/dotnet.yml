@@ -27,7 +27,7 @@ jobs:
           echo test
       - name: 'Setup: Wait for SQL server to be ready'
         run: |
-          docker run --rm chainguard/wait-for-it -h sqlserver -p 1433 -t 60
+          docker run --rm --network ${{ job.container.network }} chainguard/wait-for-it -h sqlserver -p 1433 -t 60
       - name: 'Setup: checkout'
         uses: actions/checkout@v4
       - name: 'Setup: dotnet'
