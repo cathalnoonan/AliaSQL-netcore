@@ -44,4 +44,7 @@ jobs:
           dotnet tool install --global --add-source ./release aliasql.console
       - name: 'Test: Initialize database'
         run: |
-          aliasql Update localhost SampleDatabase ./test sa SomethingSuperSecret!123
+          aliasql Update localhost SampleDatabase ./test 'sa' 'SomethingSuperSecret!123'
+      - name: 'Test: Interact with the database'
+        run: |
+          dotnet test ./sample-app
