@@ -33,6 +33,14 @@ jobs:
       - name: 'Setup: dotnet'
         uses: actions/setup-dotnet@v4
       - name: 'Build: dotnet build'
-        working-directory: ./source
         run: |
-          dotnet build
+          dotnet build ./source
+      - name: 'Build: dotnet pack'
+        run: |
+          dotnet pack ./source -o release/ -c Release
+      - name: 'Test: Add dotnet tool'
+        run: |
+          dotnet tool install --global --add-source ./release aliasql.console
+      - name: 'Test: Initialize database'
+        run: |
+          aliasql Update localhost SampleDatabase ./test sa SomethingSuperSecret!123
